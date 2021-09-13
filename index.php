@@ -1,20 +1,29 @@
 <?php
 
 require_once 'db_function.php';
-
+// DUBUG
 // echo "<pre>";
 // var_dump($_POST);
 // echo "</pre>";
 $dbh = new DbConection();
 
+/**
+ * DB INSERT処理
+ */
 if(isset($_POST['insert'])){
   $dbh->db_insert($_POST);
 }
 
+/**
+ * DB UPDATE処理
+ */
 if(isset($_POST['update'])){
   $dbh->db_update($_POST);
 }
 
+/**
+ * DB DELETE処理
+ */
 if(isset($_POST['delete'])){
   $dbh->db_delete($_POST);
 }
@@ -31,6 +40,7 @@ if(isset($_POST['delete'])){
       <ul>
         <li><span>Title</span><input type="text" name=":title"></li>
         <li><span>Body</span><input type="text" name=":body"></li>
+        <!-- タスクステータス管理用value デフォルト:1 未完了 -->
         <input type="hidden" name=":done" value="1">
         <li><input type="submit" name="insert" value="SUBMIT"></li>
       </ul>
@@ -52,16 +62,16 @@ if(isset($_POST['delete'])){
           <td>
             <?php  ?>
             <form action="edit.php" method="get">
-            <input type="hidden" name=":id" value="<?php echo($row['id']); ?>">
-            <input type="submit" name="edit" value="EDIT">
+              <input type="hidden" name=":id" value="<?php echo($row['id']); ?>">
+              <input type="submit" name="edit" value="EDIT">
             </form>
           </td>
           <td>
             <?php  ?>
             <form action="index.php" method="post">
-            <input type="hidden" name=":id" value="<?php echo($row['id']); ?>">
-            <input type="hidden" name="_method" value="DELETE"> 
-            <input type="submit" name="delete" value="DELETE">
+              <input type="hidden" name=":id" value="<?php echo($row['id']); ?>">
+              <input type="hidden" name="_method" value="DELETE"> 
+              <input type="submit" name="delete" value="DELETE">
             </form>
           </td>
         </tr>
