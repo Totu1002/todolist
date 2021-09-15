@@ -1,17 +1,19 @@
 <?php
-
+require_once 'logging.php';
 /**
  * DB操作用クラス
  */
 class DbConection{
 
   private $ini_file;
+  private $log_file;
 
   /**
    * コンストラクタ
    */
   public function __construct(){
     $this->ini_file = parse_ini_file('./config/config.ini', true);
+    $this->log_file = new RecordLogging;
   }
 
   public function db_conect(){
@@ -33,9 +35,11 @@ class DbConection{
           PDO::ATTR_EMULATE_PREPARES => false
         ]
       );  
-      //var_dump("Successful connection");
+      $log_msg = "データベースへの接続に成功しました。";
+      $this->log_file->record_logging($log_msg);
     } catch (PDOException $e) {
-      //var_dump("Connection failed");
+      $log_msg = "データベースへの接続に失敗しました。";
+      $this->log_file->record_logging($log_msg);
       exit($e->getMessage());
     }
     return $dbh;
@@ -53,6 +57,8 @@ class DbConection{
     $stmt->bindValue(":done", $db_value[':done']);
     $stmt->execute();
     $dbh = null;
+    $log_msg = __FUNCTION__ . " " . $db_value[':title'] . " " . $db_value[':body'];
+    $this->log_file->record_logging($log_msg);
   }
 
   /**
@@ -66,6 +72,8 @@ class DbConection{
     $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
     $dbh = null;
     return $items;
+    $log_msg = __FUNCTION__;
+    $this->log_file->record_logging($log_msg);
   }
 
   /**
@@ -79,6 +87,8 @@ class DbConection{
     $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
     $dbh = null;
     return $items;
+    $log_msg = __FUNCTION__;
+    $this->log_file->record_logging($log_msg);
   }
 
   /**
@@ -94,6 +104,8 @@ class DbConection{
     $stmt->bindValue(":done", $db_value[':done']);
     $stmt->execute();
     $dbh = null;
+    $log_msg = __FUNCTION__ . " " . $db_value[':title'] . " " . $db_value[':body'];
+    $this->log_file->record_logging($log_msg);
   }
 
   /**
@@ -106,6 +118,8 @@ class DbConection{
     $stmt->bindValue(":id", $db_value[':id']);
     $stmt->execute();
     $dbh = null;
+    $log_msg = __FUNCTION__ . " " . $db_value[':id'];
+    $this->log_file->record_logging($log_msg);
   }
 }
 ?>
