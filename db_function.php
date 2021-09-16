@@ -35,10 +35,10 @@ class DbConection{
           PDO::ATTR_EMULATE_PREPARES => false
         ]
       );  
-      $log_msg = "データベースへの接続に成功しました。";
+      $log_msg = __FUNCTION__ . " " . "Successful connection to the database";
       $this->log_file->record_logging($log_msg);
     } catch (PDOException $e) {
-      $log_msg = "データベースへの接続に失敗しました。";
+      $log_msg = __FUNCTION__ . " " . "Failed to connect to database";
       $this->log_file->record_logging($log_msg);
       exit($e->getMessage());
     }

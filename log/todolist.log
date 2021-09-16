@@ -1,0 +1,13 @@
+2021-09-16 13:52:21 データベースへの接続に成功しました。
+2021-09-16 14:08:00 データベースへの接続に成功しました。
+2021-09-16 14:08:00 db_insert test10 test10
+2021-09-16 14:08:00 データベースへの接続に成功しました。
+2021-09-16 14:17:06 データベースへの接続に成功しました。
+2021-09-16 14:17:18 データベースへの接続に成功しました。
+2021-09-16 14:17:18 db_update test6_edit test6_edit
+2021-09-16 14:17:18 データベースへの接続に成功しました。
+2021-09-16 14:23:33 db_conect Successful connection to the database
+2021-09-16 14:23:44 db_conect Successful connection to the database
+2021-09-16 14:24:01 db_conect Successful connection to the database
+2021-09-16 14:24:01 db_update test7_edit test7_edit
+2021-09-16 14:24:01 db_conect Successful connection to the database
