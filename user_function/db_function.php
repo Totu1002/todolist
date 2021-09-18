@@ -13,9 +13,16 @@ class DbFunction{
 		}
 	}
 	
-	public function db_create_table(){
+	public function db_create_users_table(){
 		$dbh = $this->db_conection();
 		$sql = "CREATE TABLE IF NOT EXISTS users(id INTEGER PRIMARY KEY AUTOINCREMENT,name VARCHAR(10),pass TEXT, mail TEXT)";
+		$stmt = $dbh->prepare($sql);
+    	$stmt->execute();
+	}
+
+	public function db_create_tasks_table(){
+		$dbh = $this->db_conection();
+		$sql = "CREATE TABLE IF NOT EXISTS tasks(id INTEGER PRIMARY KEY AUTOINCREMENT,title VARCHAR(10), title VARCHAR(30), done INT)";
 		$stmt = $dbh->prepare($sql);
     	$stmt->execute();
 	}
