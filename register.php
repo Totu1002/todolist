@@ -34,6 +34,6 @@ if ($member['mail'] === $mail) {
     $msg = '会員登録が完了しました';
     $link = '<a href="signin.php">ログインページ</a>';
 }
-echo "<h1><?php echo $msg; ?></h1>";
-echo "$link"; 
 ?>
+<h1><?php echo $msg; ?></h1>
+<p><?php echo $link; ?></p>

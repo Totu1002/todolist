@@ -49,9 +49,10 @@ class DbController{
    * DB INSERT処理
    */
   public function db_insert($db_value){
-    $sql = 'INSERT INTO tasks(title, body, done) VALUES (:title, :body, :done)';
+    $sql = 'INSERT INTO tasks(user_id, title, body, done) VALUES (:user_id, :title, :body, :done)';
     $dbh = $this->db_conect();
     $stmt = $dbh->prepare($sql);
+    $stmt->bindValue(":user_id", $db_value[':user_id']);
     $stmt->bindValue(":title", $db_value[':title']);
     $stmt->bindValue(":body", $db_value[':body']);
     $stmt->bindValue(":done", $db_value[':done']);
@@ -65,7 +66,7 @@ class DbController{
    * DB SELECT処理
    * index用全件取得
    */
-  function db_select_all(){
+  public function db_select_all(){
     $sql = 'SELECT * FROM tasks';
     $dbh = $this->db_conect();
     $stmt = $dbh->query($sql);
@@ -76,12 +77,25 @@ class DbController{
     $this->log_file->record_logging($log_msg);
   }
 
+  public function select_user_task($db_value){
+    $sql = "SELECT * FROM tasks  JOIN users ON tasks.user_id = users.id WHERE users.id = {$db_value}";
+    $dbh = $this->db_conect();
+    $stmt = $dbh->query($sql);
+    //$stmt->bindValue(":user_id", $db_value);
+    $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $dbh = null;
+    return $items;
+    $log_msg = __FUNCTION__;
+    $this->log_file->record_logging($log_msg);
+  }
+
+
   /**
    * DB SELECT処理
    * 特定レコード取得
    */
-  function db_select_id($id){
-    $sql = "SELECT * FROM tasks WHERE id={$id}";
+  public function db_select_id($id){
+    $sql = "SELECT * FROM tasks WHERE id={$id}"; // TODO sqlインジェクション対象になる?
     $dbh = $this->db_conect();
     $stmt = $dbh->query($sql);
     $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -176,7 +190,6 @@ class DbController{
     $items = $stmt->fetchAll();
     return $items;
 	}
-
 
   /**
    * 新規テーブル/カラム作成処理

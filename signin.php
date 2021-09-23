@@ -2,9 +2,9 @@
 require_once 'db_controller.php';
 
 // DUBUG
-echo "<pre>";
-var_dump($_POST);
-echo "</pre>";
+//echo "<pre>";
+//var_dump($_POST);
+//echo "</pre>";
 
 //セッションを使うことを宣言
 session_start();
@@ -61,7 +61,7 @@ else {
       session_regenerate_id(TRUE); //セッションidを再発行
       //$_SESSION["signin"] = $_POST['name']; //セッションにログイン情報を登録
       $_SESSION["signin"] = $signin_user['id'];
-      header("Location: result.php"); //ログイン後のページにリダイレクト
+      header("Location: index.php"); //ログイン後のページにリダイレクト
       exit();
     }
   }
@@ -89,5 +89,6 @@ $message = htmlspecialchars($message);
         </ul>
       </form>
     </div>
+    <p>新規登録は<a href="signup.php">こちら</a></p>
   </body>
 </html>
