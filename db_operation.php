@@ -1,15 +1,19 @@
 <?php
-require_once 'db_function.php';
+require_once 'db_controller.php';
 
 /**
  * DB動作確認/操作用スクリプト
  * 検証/動作確認用につき、最終的には削除予定
  */
 
-$dbh = new DbFunction;
+$dbh = new DbController;
 //$dbh->db_conection();
 
-//新規テーブル作成用処理
+//テーブル削除処理
+//$dbh->delete_table_users();
+//$dbh->delete_table_tasks();
+
+//テーブル作成処理
 //$dbh->create_users_table();
 //$dbh->create_tasks_table();
 
@@ -29,7 +33,4 @@ $dbh = new DbFunction;
 //$tasks_items = $dbh->select_all($select_tasks);
 //var_dump($tasks_items);
 
-$db_value = "user1";
-$user_id = $dbh->select_signin_user($db_value);
-var_dump($user_id);
 ?>

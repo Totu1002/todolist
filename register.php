@@ -1,5 +1,5 @@
 <?php
-require_once 'db_function.php';
+require_once 'db_controller.php';
 
 $name = $_POST['name'];
 $mail = $_POST['mail'];
@@ -7,8 +7,8 @@ $mail = $_POST['mail'];
 $pass = password_hash($_POST['pass'], PASSWORD_DEFAULT);
 
 //class
-$pdo = new DbFunction;
-$dbh = $pdo->db_conection();
+$pdo = new DbController;
+$dbh = $pdo->db_conect();
 
 //$dbh = new PDO('sqlite:Login.sqlite3');
 //$dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);

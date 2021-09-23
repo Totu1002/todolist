@@ -1,13 +1,13 @@
 <?php 
 
-require_once 'db_function.php';
+require_once 'db_controller.php';
 
 // DUBUG
 // echo "<pre>";
 // var_dump($_GET);
 // echo "</pre>";
 
-$dbh = new DbConection;
+$dbh = new DbController;
 $res_show = $dbh->db_select_id($_GET[':id']); //GETされたIDよりレコードを取得
 $res_show = $res_show[0];
 // DEBUG

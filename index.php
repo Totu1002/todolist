@@ -1,6 +1,6 @@
 <?php
 
-require_once 'db_function.php';
+require_once 'db_controller.php';
 // DUBUG
 // echo "<pre>";
 // var_dump($_POST);
@@ -9,7 +9,7 @@ require_once 'db_function.php';
 //セッションを使うことを宣言
 session_start();
 
-$dbh = new DbConection();
+$dbh = new DbController();
 
 /**
  * DB INSERT処理

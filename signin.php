@@ -1,5 +1,5 @@
 <?php
-require_once 'db_function.php';
+require_once 'db_controller.php';
 
 // DUBUG
 echo "<pre>";
@@ -11,8 +11,8 @@ session_start();
 
 //データベースに接続する
 try {
-  $pdo = new DbFunction;
-  $dbh = $pdo->db_conection();
+  $pdo = new DbController;
+  $dbh = $pdo->db_conect();
 }
 catch (PDOExeption $e) {
   exit ('データベースエラー');
