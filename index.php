@@ -5,6 +5,10 @@ require_once 'db_function.php';
 // echo "<pre>";
 // var_dump($_POST);
 // echo "</pre>";
+
+//セッションを使うことを宣言
+session_start();
+
 $dbh = new DbConection();
 
 /**
@@ -28,6 +32,16 @@ if(isset($_POST['delete'])){
   $dbh->db_delete($_POST);
 }
 
+//ログインされていない場合は強制的にログインページにリダイレクト
+//if (!isset($_SESSION["signin"])) {
+//  header("Location: signin.php");
+//  exit();
+//}
+
+//ログインされている場合は表示用メッセージを編集
+$message = $_SESSION['signin']."さんようこそ";
+$message = htmlspecialchars($message);
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -35,6 +49,8 @@ if(isset($_POST['delete'])){
     <title>TEST</title>
   </head>
   <body>
+    <div class="message"><?php echo $message;?></div>
+    <a href="logout.php">ログアウト</a>
     <h1>FORM</h1>
     <form action="index.php" method="post">
       <ul>

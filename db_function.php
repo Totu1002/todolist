@@ -121,5 +121,91 @@ class DbConection{
     $log_msg = __FUNCTION__ . " " . $db_value[':id'];
     $this->log_file->record_logging($log_msg);
   }
+
+  // TODO 以下、user_function branchから反映内容
+  /**
+   * signin.phpにて使用
+   * session管理、users/idを取得
+   */
+	public function select_signin_user($db_value){
+		$dbh = $this->db_conect();
+		$sql = "SELECT * FROM users WHERE name=:name";
+		//var_dump($sql);
+		$stmt = $dbh->prepare($sql);
+		$stmt->bindParam(':name',$db_value); // TODO nameによる参照は不適切かも
+		$stmt->execute();
+    $items = $stmt->fetchAll();
+    return $items;
+	}  
+
+
+  // 以下、検証/動作確認用メソッド群につき、最終的には削除予定
+  /**
+   * sqlite3へ接続する場合の処理
+   * 動作確認/検証用
+   * 使用する場合には他メソッドの$dbhを定義している箇所を本メソッドに置き換える
+   */
+	public function db_conect_sqlite3(){
+		try{
+			$pdo = new PDO('sqlite:Login.sqlite3');
+			$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+			echo('--- db conection ok ---' . "\n");
+			return $pdo;
+		}catch (Exception $e){
+			echo ($e->getMessage());
+		}
+	}
+
+  /**
+   * 新規テーブル/カラム作成処理
+   */
+  public function create_users_table(){
+		$dbh = $this->db_conect();
+		$sql = "CREATE TABLE IF NOT EXISTS users(id INTEGER PRIMARY KEY AUTOINCREMENT,name VARCHAR(10),pass TEXT, mail TEXT)";
+		$stmt = $dbh->prepare($sql);
+    $stmt->execute();
+	}
+
+	public function create_tasks_table(){
+		$dbh = $this->db_conect();
+		$sql = "CREATE TABLE IF NOT EXISTS tasks(id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER, title VARCHAR(10), body VARCHAR(30), done INTEGER)";
+		$stmt = $dbh->prepare($sql);
+    $stmt->execute();
+	}
+
+  /**
+   * 検証用ユーザー作成処理
+   */
+	public function insert_default_user(){
+		$dbh = $this->db_conect();
+		$user_name = "dev_user";
+		$user_pass = password_hash('dev_user_pass', PASSWORD_DEFAULT);
+		$user_mail = "dev_user@tes.com";
+		$sql = "INSERT INTO users(name, pass, mail) VALUES (:name, :pass, :mail)";
+		$stmt = $dbh->prepare($sql);
+		$stmt->bindParam(':name',$user_name);
+		$stmt->bindParam(':pass',$user_pass);
+		$stmt->bindParam(':mail',$user_mail);
+    $stmt->execute();
+	}
+
+	//検証用:usersテーブル全件取得メソッド
+	public function select_users_all(){
+		$dbh = $this->db_conect();
+		$sql = "SELECT * FROM users";
+		$stmt = $dbh->query($sql);
+    $items = $stmt->fetchAll();
+    return $items;
+	}
+
+	//検証用:tasksテーブル全件取得メソッド
+	public function select_tasks_all(){
+		$dbh = $this->db_conect();
+		$sql = "SELECT * FROM tasks";
+		$stmt = $dbh->query($sql);
+    $items = $stmt->fetchAll();
+    return $items;
+	}
 }
 ?>
