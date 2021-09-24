@@ -1,11 +1,26 @@
 <?php
 
-require_once 'db_function.php';
+require_once 'db_controller.php';
 // DUBUG
-// echo "<pre>";
-// var_dump($_POST);
-// echo "</pre>";
-$dbh = new DbConection();
+echo "<pre>";
+var_dump($_POST);
+echo "</pre>";
+
+//セッションを使うことを宣言
+session_start();
+
+//サインイン状態であるか判定
+if (empty($_SESSION["signin"])) {
+  session_regenerate_id(TRUE);
+  header("Location: signin.php");
+  exit();
+}
+
+//ログインされている場合は表示用メッセージを編集
+$message = $_SESSION['signin']."さんようこそ";
+$message = htmlspecialchars($message);
+
+$dbh = new DbController();
 
 /**
  * DB INSERT処理
@@ -28,6 +43,12 @@ if(isset($_POST['delete'])){
   $dbh->db_delete($_POST);
 }
 
+//ログインされていない場合は強制的にログインページにリダイレクト
+//if (!isset($_SESSION["signin"])) {
+//  header("Location: signin.php");
+//  exit();
+//}
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -35,6 +56,8 @@ if(isset($_POST['delete'])){
     <title>TEST</title>
   </head>
   <body>
+    <div class="message"><?php echo $message;?></div>
+    <a href="logout.php">ログアウト</a>
     <h1>FORM</h1>
     <form action="index.php" method="post">
       <ul>
@@ -42,13 +65,16 @@ if(isset($_POST['delete'])){
         <li><span>Body</span><input type="text" name=":body"></li>
         <!-- タスクステータス管理用value デフォルト:1 未完了 -->
         <input type="hidden" name=":done" value="1">
+        <!-- user_idへusers/idを送信 -->
+        <input type="hidden" name=":user_id" value="<?php echo($_SESSION['signin']) ?>">
+        <input type="hidden" name=":done" value="1">
         <li><input type="submit" name="insert" value="SUBMIT"></li>
       </ul>
     </form>
     <h1>LIST</h1>
     <ul>
       <?php
-        $res_select = $dbh->db_select_all();
+        $res_select = $dbh->select_user_task($_SESSION['signin']);
         // DEBUG
         // var_dump($res_select);
         foreach($res_select as $row){
@@ -56,6 +82,7 @@ if(isset($_POST['delete'])){
       <table>
         <tr>
           <td><?php echo "{$row['id']}" ?></td>
+          <td><?php echo "{$row['user_id']}" ?></td>
           <td><?php echo "{$row['title']}"; ?></td>
           <td><?php echo "{$row['body']}"; ?></td>
           <td><?php echo "{$row['done']}"; ?></td>
