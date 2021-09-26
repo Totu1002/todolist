@@ -12,7 +12,7 @@ class DbController{
    * コンストラクタ
    */
   public function __construct(){
-    $this->ini_file = parse_ini_file('./config/config.ini', true);
+    $this->ini_file = parse_ini_file('../config/config.ini', true);
     $this->log_file = new RecordLogging;
   }
 
@@ -78,7 +78,8 @@ class DbController{
   }
 
   public function select_user_task($db_value){
-    $sql = "SELECT * FROM tasks  JOIN users ON tasks.user_id = users.id WHERE users.id = {$db_value}";
+    //$sql = "SELECT * FROM tasks  JOIN users ON tasks.userid = users.id WHERE users.id = {$db_value}";
+    $sql = "SELECT * FROM tasks WHERE user_id = {$db_value}";
     $dbh = $this->db_conect();
     $stmt = $dbh->query($sql);
     //$stmt->bindValue(":user_id", $db_value);
@@ -161,7 +162,7 @@ class DbController{
    */
 	public function db_conect_sqlite3(){
 		try{
-			$pdo = new PDO('sqlite:Login.sqlite3');
+			$pdo = new PDO('sqlite:../data/Login.sqlite3');
 			$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			$pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 			echo('--- db conection ok ---' . "\n");
@@ -199,7 +200,7 @@ class DbController{
     //sqlite用
 		//$sql = "CREATE TABLE IF NOT EXISTS users(id INTEGER PRIMARY KEY AUTOINCREMENT,name VARCHAR(10),pass TEXT, mail TEXT)";
     //postgresql用
-    $sql = "CREATE TABLE IF NOT EXISTS users(id SERIAL,name VARCHAR(10),pass TEXT, mail TEXT, PRIMARY KEY (id))";
+    $sql = 'CREATE TABLE users(id SERIAL,name VARCHAR(10),pass TEXT, mail TEXT, PRIMARY KEY (id))';
 		$stmt = $dbh->prepare($sql);
     $stmt->execute();
 	}
@@ -209,7 +210,7 @@ class DbController{
     //sqlite用
 		//$sql = "CREATE TABLE IF NOT EXISTS tasks(id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER, title VARCHAR(10), body VARCHAR(30), done INTEGER)";
     //postgresql用
-    $sql = "CREATE TABLE IF NOT EXISTS tasks(id SERIAL, user_id INTEGER, title VARCHAR(10), body VARCHAR(30), done INTEGER, PRIMARY KEY (id))";
+    $sql = 'CREATE TABLE tasks(id SERIAL, user_id INTEGER, title VARCHAR(10), body VARCHAR(30), done INTEGER, PRIMARY KEY (id))';
 		$stmt = $dbh->prepare($sql);
     $stmt->execute();
 	}

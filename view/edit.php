@@ -1,32 +1,24 @@
 <?php 
 
-require_once 'db_controller.php';
-
-/**
- * 詳細表示ページ
- * 現在未使用
- */
+require_once '../action/db_controller.php';
 
 // DUBUG
-echo "<pre>";
-var_dump($_GET);
-echo "</pre>";
+// echo "<pre>";
+// var_dump($_GET);
+// echo "</pre>";
+
+//サインイン状態ではない場合は強制的にログインページにリダイレクト
+if (!isset($_SESSION["signin"])) {
+  session_regenerate_id(TRUE);
+  header("Location: signin.php");
+  exit();
+}
 
 $dbh = new DbController;
 $res_show = $dbh->db_select_id($_GET[':id']); //GETされたIDよりレコードを取得
 $res_show = $res_show[0];
 // DEBUG
 // var_dump($res_show);
-
-/**
- * DB UPDATE処理
- */
-if(isset($_POST['update'])){
-  $res_show = $dbh->db_select_id($_POST[':id']); //GETされたIDよりレコードを取得
-  $res_show = $res_show[0];
-  $dbh->db_update($_POST);
-}
-
 ?>
 
 <!DOCTYPE html>
@@ -35,8 +27,8 @@ if(isset($_POST['update'])){
     <title>TEST</title>
   </head>
   <body>
-    <h1>SHOW</h1>
-    <form action="show.php" method="post">
+    <h1>EDIT</h1>
+    <form action="../action/index_function.php" method="post">
       <ul>
         <li><span>Title</span><input type="text" name=":title" value="<?php echo($res_show['title']); ?>"></li>
         <li><span>Body</span><input type="text" name=":body" value="<?php echo($res_show['body']); ?>"></li> 

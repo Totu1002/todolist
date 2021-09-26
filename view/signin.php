@@ -1,5 +1,5 @@
 <?php
-require_once 'db_controller.php';
+require_once '../action/db_controller.php';
 
 // DUBUG
 //echo "<pre>";
@@ -60,7 +60,7 @@ else {
     else {
       session_regenerate_id(TRUE); //セッションidを再発行
       //$_SESSION["signin"] = $_POST['name']; //セッションにログイン情報を登録
-      $_SESSION["signin"] = $signin_user['id'];
+      $_SESSION["signin"] = $signin_user['id'];      
       header("Location: index.php"); //ログイン後のページにリダイレクト
       exit();
     }

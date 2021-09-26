@@ -1,5 +1,5 @@
 <?php
-require_once 'db_controller.php';
+require_once '../action/db_controller.php';
 
 /**
  * DB動作確認/操作用スクリプト
@@ -10,12 +10,12 @@ $dbh = new DbController;
 //$dbh->db_conection();
 
 //テーブル削除処理
-//$dbh->delete_table_users();
-//$dbh->delete_table_tasks();
+$dbh->delete_table_users();
+$dbh->delete_table_tasks();
 
 //テーブル作成処理
-//$dbh->create_users_table();
-//$dbh->create_tasks_table();
+$dbh->create_users_table();
+$dbh->create_tasks_table();
 
 //$select_users = $dbh->db_select_users();
 //var_dump($select_users);

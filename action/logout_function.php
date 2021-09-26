@@ -18,8 +18,8 @@ if (ini_get("session.use_cookies")) {
 
 //セッションを破棄
 session_destroy();
-?>
 
+?>
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -30,6 +30,6 @@ session_destroy();
 <body>
 <h1>ログアウトページ</h1>
 <div class="message">ログアウトしました</div>
-<a href="signin.php">ログインページへ</a>
+<a href="../view/signin.php">ログインページへ</a>
 </body>
 </html>

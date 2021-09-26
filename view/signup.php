@@ -8,7 +8,7 @@
     <meta charset="UTF-8">
     <h1>Signup page</h1>
     <div class="signupform">
-      <form action="register.php" method="post"> 
+      <form action="../action/signup_function.php" method="post"> 
         <div>
             <label>名前：<label>
             <input type="text" name="name" required>

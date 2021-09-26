@@ -10,11 +10,6 @@ $pass = password_hash($_POST['pass'], PASSWORD_DEFAULT);
 $pdo = new DbController;
 $dbh = $pdo->db_conect();
 
-//$dbh = new PDO('sqlite:Login.sqlite3');
-//$dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-//$dbh->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-
-
 //TODO ユーザー名も同一は拒否するようにしたい→signin処理でuser判別に影響ある
 $sql = "SELECT * FROM users WHERE mail = :mail";
 $stmt = $dbh->prepare($sql);
@@ -32,7 +27,7 @@ if ($member['mail'] === $mail) {
     $stmt->bindValue(':pass', $pass);
     $stmt->execute();
     $msg = '会員登録が完了しました';
-    $link = '<a href="signin.php">ログインページ</a>';
+    $link = '<a href="../view/signin.php">ログインページ</a>';
 }
 ?>
 <h1><?php echo $msg; ?></h1>
