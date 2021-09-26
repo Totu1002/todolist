@@ -2,21 +2,14 @@
 require_once '../action/db_controller.php';
 
 // DUBUG
-//echo "<pre>";
-//var_dump($_POST);
-//echo "</pre>";
+echo "<pre>";
+var_dump($_POST);
+echo "</pre>";
 
 //セッションを使うことを宣言
 session_start();
 
-//データベースに接続する
-try {
-  $pdo = new DbController;
-  $dbh = $pdo->db_conect();
-}
-catch (PDOExeption $e) {
-  exit ('データベースエラー');
-}
+$dbh = new DbController;
 
 //ログイン状態の場合ログイン後のページにリダイレクト
 if (isset($_SESSION["signin"])) {
@@ -38,28 +31,16 @@ else {
   //ユーザー名とパスワードが送信されて来た場合
   else {
     //post送信されてきたユーザー名がデータベースにあるか検索
-    try {
-      $stmt = $dbh->prepare('SELECT * FROM users WHERE name=?');
-      $stmt -> bindParam(1, $_POST['name'], PDO::PARAM_STR, 10);
-      $stmt -> execute();
-      $signin_user = $stmt -> fetch(PDO::FETCH_ASSOC);
-    }
-    catch (PDOExeption $e) {
-      exit('データベースエラー');
-    }
+    $signin_user = $dbh->select_users_name($_POST['name']);
+    $signin_user = $signin_user[0];
 
     //検索したユーザー名に対してパスワードが正しいかを検証
-    //正しくないとき:パスワードをハッシュで保存、検証する場合
     if (!password_verify($_POST['pass'], $signin_user['pass'])) {
-    //if ($_POST['pass'] !== $result['pass']) {
-      // DEBUG
-      echo("ユーザーパスワード検証");
       $message="ユーザー名かパスワードが違います";
     }
     //正しいとき
     else {
       session_regenerate_id(TRUE); //セッションidを再発行
-      //$_SESSION["signin"] = $_POST['name']; //セッションにログイン情報を登録
       $_SESSION["signin"] = $signin_user['id'];      
       header("Location: index.php"); //ログイン後のページにリダイレクト
       exit();

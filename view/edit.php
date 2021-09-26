@@ -15,7 +15,7 @@ if (!isset($_SESSION["signin"])) {
 }
 
 $dbh = new DbController;
-$res_show = $dbh->db_select_id($_GET[':id']); //GETされたIDよりレコードを取得
+$res_show = $dbh->select_tasks_id($_GET[':id']); //GETされたIDよりレコードを取得
 $res_show = $res_show[0];
 // DEBUG
 // var_dump($res_show);

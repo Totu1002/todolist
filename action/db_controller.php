@@ -47,8 +47,9 @@ class DbController{
 
   /**
    * DB INSERT処理
+   * tasksテーブル用
    */
-  public function db_insert($db_value){
+  public function insert_tasks($db_value){
     $sql = 'INSERT INTO tasks(user_id, title, body, done) VALUES (:user_id, :title, :body, :done)';
     $dbh = $this->db_conect();
     $stmt = $dbh->prepare($sql);
@@ -63,11 +64,25 @@ class DbController{
   }
 
   /**
-   * DB SELECT処理
-   * index用全件取得
+   * DB INSERT処理
+   * usersテーブル用
    */
-  public function db_select_all(){
-    $sql = 'SELECT * FROM tasks';
+  public function insert_users($db_value){
+    $sql = "INSERT INTO users(name, mail, pass) VALUES (:name, :mail, :pass)";
+    $dbh = $this->db_conect();
+    $stmt = $dbh->prepare($sql);
+    $stmt->bindValue(':name', $db_value[':name']);
+    $stmt->bindValue(':mail', $db_value[':mail']);
+    $stmt->bindValue(':pass', $db_value[':pass']);
+    $stmt->execute();
+  }
+
+  /**
+   * DB SELECT処理
+   * users全件取得
+   */
+  public function select_users_all(){
+    $sql = 'SELECT * FROM users';
     $dbh = $this->db_conect();
     $stmt = $dbh->query($sql);
     $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -77,6 +92,10 @@ class DbController{
     $this->log_file->record_logging($log_msg);
   }
 
+  /**
+   * DB SELECT処理
+   * index用全件取得
+   */
   public function select_user_task($db_value){
     //$sql = "SELECT * FROM tasks  JOIN users ON tasks.userid = users.id WHERE users.id = {$db_value}";
     $sql = "SELECT * FROM tasks WHERE user_id = {$db_value}";
@@ -93,10 +112,10 @@ class DbController{
 
   /**
    * DB SELECT処理
-   * 特定レコード取得
+   * tasksテーブル特定レコード取得
    */
-  public function db_select_id($id){
-    $sql = "SELECT * FROM tasks WHERE id={$id}"; // TODO sqlインジェクション対象になる?
+  public function select_tasks_id($id){
+    $sql = "SELECT * FROM tasks WHERE id = {$id}"; // TODO sqlインジェクション対象になる?
     $dbh = $this->db_conect();
     $stmt = $dbh->query($sql);
     $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -107,9 +126,43 @@ class DbController{
   }
 
   /**
+   * DB SELECT処理
+   * usersテーブル特定レコード取得
+   */
+  public function select_users_name($db_value){
+    $sql = "SELECT * FROM users WHERE name = :name";
+    $dbh = $this->db_conect();
+    $stmt = $dbh->prepare($sql);
+    $stmt->bindParam(":name", $db_value);
+    $stmt->execute();
+    $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $dbh = null;
+    return $items;
+    $log_msg = __FUNCTION__;
+    $this->log_file->record_logging($log_msg);
+  }
+
+  /**
+   * DB SELECT処理
+   * usersテーブル特定レコード取得
+   */
+  public function select_users_mail($db_value){
+    $sql = "SELECT * FROM users WHERE mail = :mail";
+    $dbh = $this->db_conect();
+    $stmt = $dbh->prepare($sql);
+    $stmt->bindParam(":mail", $db_value);
+    $stmt->execute();
+    $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $dbh = null;
+    return $items;
+    $log_msg = __FUNCTION__;
+    $this->log_file->record_logging($log_msg);
+  }
+
+  /**
    * DB UPDATE処理
    */
-  public function db_update($db_value){
+  public function update_tasks($db_value){
     //var_dump($db_value);
     $sql = "UPDATE tasks SET title=:title, body=:body, done=:done WHERE id={$db_value[':id']}";
     $dbh = $this->db_conect();
@@ -126,7 +179,7 @@ class DbController{
   /**
    * DB DELETE処理
    */
-  public function db_delete($db_value){
+  public function delete_tasks($db_value){
     $sql = "DELETE FROM tasks WHERE id=:id";
     $dbh = $this->db_conect();
     $stmt = $dbh->prepare($sql);
@@ -232,7 +285,7 @@ class DbController{
 	}
 
 	//検証用:usersテーブル全件取得メソッド
-	public function select_users_all(){
+	public function select_users_all_dev(){
 		$dbh = $this->db_conect();
 		$sql = "SELECT * FROM users";
 		$stmt = $dbh->query($sql);
@@ -241,7 +294,7 @@ class DbController{
 	}
 
 	//検証用:tasksテーブル全件取得メソッド
-	public function select_tasks_all(){
+	public function select_tasks_all_dev(){
 		$dbh = $this->db_conect();
 		$sql = "SELECT * FROM tasks";
 		$stmt = $dbh->query($sql);

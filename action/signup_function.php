@@ -6,29 +6,25 @@ $mail = $_POST['mail'];
 //passwordハッシュ化処理
 $pass = password_hash($_POST['pass'], PASSWORD_DEFAULT);
 
-//class
-$pdo = new DbController;
-$dbh = $pdo->db_conect();
+$dbh = new DbController;
+$member_mail = $dbh->select_users_mail($mail);
+$member_mail = $member_mail[0];
 
-//TODO ユーザー名も同一は拒否するようにしたい→signin処理でuser判別に影響ある
-$sql = "SELECT * FROM users WHERE mail = :mail";
-$stmt = $dbh->prepare($sql);
-$stmt->bindValue(':mail', $mail);
-$stmt->execute();
-$member = $stmt->fetch();
-if ($member['mail'] === $mail) {
-    $msg = '同じメールアドレスが存在します。';
-    $link = '<a href="signup.php">戻る</a>';
+$member_name = $dbh->select_users_name($name);
+$member_name = $member_name[0];
+
+if ($member_name['name'] === $name) {
+    $msg = 'The same username already exists.';
+    $link = '<a href="../view/signup.php">return</a>';
+} elseif($member_mail['mail'] === $mail) {
+    $msg = 'The same email address exists.';
+    $link = '<a href="../view/signup.php">return</a>';
 } else {
-    $sql = "INSERT INTO users(name, mail, pass) VALUES (:name, :mail, :pass)";
-    $stmt = $dbh->prepare($sql);
-    $stmt->bindValue(':name', $name);
-    $stmt->bindValue(':mail', $mail);
-    $stmt->bindValue(':pass', $pass);
-    $stmt->execute();
-    $msg = '会員登録が完了しました';
-    $link = '<a href="../view/signin.php">ログインページ</a>';
+    $dbh->insert_users($db_val);
+    $msg = 'Member registration is complete';
+    $link = '<a href="../view/signin.php">signin page</a>';
 }
+
 ?>
 <h1><?php echo $msg; ?></h1>
 <p><?php echo $link; ?></p>

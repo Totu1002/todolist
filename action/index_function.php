@@ -14,7 +14,7 @@ $dbh = new DbController();
  * DB INSERT処理
  */
 if(isset($_POST['insert'])){
-  $dbh->db_insert($_POST);
+  $dbh->insert_tasks($_POST);
   header("Location: ../view/index.php");
   exit();
 }
@@ -23,7 +23,7 @@ if(isset($_POST['insert'])){
  * DB UPDATE処理
  */
 if(isset($_POST['update'])){
-  $dbh->db_update($_POST);
+  $dbh->update_tasks($_POST);
   header("Location: ../view/index.php");
   exit();
 }
@@ -32,7 +32,7 @@ if(isset($_POST['update'])){
  * DB DELETE処理
  */
 if(isset($_POST['delete'])){
-  $dbh->db_delete($_POST);
+  $dbh->delete_tasks($_POST);
   header("Location: ../view/index.php");
   exit();
 }
