@@ -191,21 +191,6 @@ class DbController{
   }
 
   // TODO 以下、user_function branchから反映内容
-  /**
-   * signin.phpにて使用
-   * session管理、users/idを取得
-   */
-	public function select_signin_user($db_value){
-		$dbh = $this->db_conect();
-		$sql = "SELECT * FROM users WHERE name=:name";
-		//var_dump($sql);
-		$stmt = $dbh->prepare($sql);
-		$stmt->bindParam(':name',$db_value); // TODO nameによる参照は不適切かも
-		$stmt->execute();
-    $items = $stmt->fetchAll();
-    return $items;
-	}  
-
 
   // 以下、検証/動作確認用メソッド群につき、最終的には削除予定
   /**
@@ -247,13 +232,15 @@ class DbController{
 
   /**
    * 新規テーブル/カラム作成処理
+   * role 0:ユーザー,1:管理者,2:ゲスト
+   * status 0:入会,1:退会
    */
   public function create_users_table(){
 		$dbh = $this->db_conect();
     //sqlite用
 		//$sql = "CREATE TABLE IF NOT EXISTS users(id INTEGER PRIMARY KEY AUTOINCREMENT,name VARCHAR(10),pass TEXT, mail TEXT)";
     //postgresql用
-    $sql = 'CREATE TABLE users(id SERIAL,name VARCHAR(10),pass TEXT, mail TEXT, PRIMARY KEY (id))';
+    $sql = 'CREATE TABLE users(id SERIAL,name VARCHAR(10),pass TEXT, mail TEXT,role TEXT default 0, status TEXT default 0, PRIMARY KEY (id))';
 		$stmt = $dbh->prepare($sql);
     $stmt->execute();
 	}
@@ -269,18 +256,38 @@ class DbController{
 	}
 
   /**
-   * 検証用ユーザー作成処理
+   * 管理者ユーザー作成処理
    */
-	public function insert_default_user(){
+	public function insert_users_administrator(){
 		$dbh = $this->db_conect();
-		$user_name = "dev_user";
-		$user_pass = password_hash('dev_user_pass', PASSWORD_DEFAULT);
-		$user_mail = "dev_user@tes.com";
-		$sql = "INSERT INTO users(name, pass, mail) VALUES (:name, :pass, :mail)";
+		$user_name = "admin";
+		$user_pass = password_hash('adminpass', PASSWORD_DEFAULT);
+		$user_mail = "admin@admin.com";
+    $user_role = 1; //0:user,1:admin,2:guest
+		$sql = "INSERT INTO users(name, pass, mail, role) VALUES (:name, :pass, :mail, :role)";
 		$stmt = $dbh->prepare($sql);
 		$stmt->bindParam(':name',$user_name);
 		$stmt->bindParam(':pass',$user_pass);
 		$stmt->bindParam(':mail',$user_mail);
+    $stmt->bindParam(':role',$user_role);
+    $stmt->execute();
+	}
+
+  /**
+   * ゲストユーザー作成処理
+   */
+	public function insert_users_guest(){
+		$dbh = $this->db_conect();
+		$user_name = "guest";
+		$user_pass = password_hash('guestpass', PASSWORD_DEFAULT);
+		$user_mail = "guest@guest.com";
+    $user_role = 2; //0:user,1:admin,2:guest
+		$sql = "INSERT INTO users(name, pass, mail, role) VALUES (:name, :pass, :mail, :role)";
+		$stmt = $dbh->prepare($sql);
+		$stmt->bindParam(':name',$user_name);
+		$stmt->bindParam(':pass',$user_pass);
+		$stmt->bindParam(':mail',$user_mail);
+    $stmt->bindParam(':role',$user_role);
     $stmt->execute();
 	}
 

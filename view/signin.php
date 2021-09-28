@@ -33,6 +33,7 @@ else {
     //post送信されてきたユーザー名がデータベースにあるか検索
     $signin_user = $dbh->select_users_name($_POST['name']);
     $signin_user = $signin_user[0];
+    var_dump($signin_user);
 
     //検索したユーザー名に対してパスワードが正しいかを検証
     if (!password_verify($_POST['pass'], $signin_user['pass'])) {
@@ -41,9 +42,14 @@ else {
     //正しいとき
     else {
       session_regenerate_id(TRUE); //セッションidを再発行
-      $_SESSION["signin"] = $signin_user['id'];      
-      header("Location: index.php"); //ログイン後のページにリダイレクト
-      exit();
+      $_SESSION["signin"] = $signin_user['id'];    
+      if ($signin_user['role'] === "1"){
+        header("Location: index_admin.php"); //ログイン後のページにリダイレクト
+        exit();
+      } else {
+        header("Location: index.php"); //ログイン後のページにリダイレクト
+        exit();
+      } 
     }
   }
 }
@@ -70,6 +76,12 @@ $message = htmlspecialchars($message);
         </ul>
       </form>
     </div>
+    <!-- guestユーザーにつきhiddenを使用 -->
+    <form action="signin.php" method="post">
+      <input type="hidden" name="name" value="guest">
+      <input type="hidden" name="pass" value="guestpass">
+      <input type="submit" name="guest_login" value="ゲストログイン">
+    </form>
     <p>新規登録は<a href="signup.php">こちら</a></p>
   </body>
 </html>
