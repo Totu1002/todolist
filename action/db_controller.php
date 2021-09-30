@@ -250,7 +250,7 @@ class DbController{
     //sqlite用
 		//$sql = "CREATE TABLE IF NOT EXISTS tasks(id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER, title VARCHAR(10), body VARCHAR(30), done INTEGER)";
     //postgresql用
-    $sql = 'CREATE TABLE tasks(id SERIAL, user_id INTEGER, title VARCHAR(10), body VARCHAR(30), done INTEGER, PRIMARY KEY (id))';
+    $sql = 'CREATE TABLE tasks(id SERIAL, user_id INTEGER, title VARCHAR(10), body VARCHAR(30), done INTEGER default 0, PRIMARY KEY (id))';
 		$stmt = $dbh->prepare($sql);
     $stmt->execute();
 	}
