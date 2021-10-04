@@ -16,8 +16,14 @@ if (!isset($_SESSION["signin"])) {
   exit();
 }
 
+if (isset($_SESSION["signin"]) && $_SESSION["role"] === 1) {
+  session_regenerate_id(TRUE);
+  header("Location: index_admin.php");
+  exit();
+}
+
 //サインイン時表示用メッセージ
-$message = $_SESSION['signin']."さんようこそ";
+$message = "Welcom to user : " . $_SESSION['signin'];
 $message = htmlspecialchars($message);
 
 $dbh = new DbController();
@@ -30,26 +36,30 @@ $dbh = new DbController();
   </head>
   <body>
     <div class="message"><?php echo $message;?></div>
-    <a href="../action/logout_function.php">ログアウト</a>
+    <!--<form action="../action/index_function.php" method="get">
+      <input type="hidden" name="id" value="<?php echo($_SESSION['signin']) ?>">
+    </form>-->
+    <a href="./user_edit.php"><button type="button">USER EDIT</button></a>
+    <a href="../action/logout_function.php"><button type="button">LOGOUT</button></a>
     <h1>FORM</h1>
     <form action="../action/index_function.php" method="post">
       <ul>
         <li><span>Title</span><input type="text" name=":title"></li>
         <li><span>Body</span><input type="text" name=":body"></li>
         <!-- タスクステータス管理用value デフォルト:1 未完了 -->
-        <input type="hidden" name=":done" value="1">
+        <!--<input type="hidden" name=":done" value="1">-->
         <!-- user_idへusers/idを送信 -->
-        <input type="hidden" name=":user_id" value="<?php echo($_SESSION['signin']) ?>">        
+        <input type="hidden" name=":user_id" value="<?php echo($_SESSION['signin']) ?>">
         <li><input type="submit" name="insert" value="SUBMIT"></li>
       </ul>
     </form>
-    <h1>LIST</h1>
+    <h1>ACTIVE LIST</h1>
     <ul>
       <?php
-        $res_select = $dbh->select_user_task($_SESSION['signin']);
+        $active_tasks = $dbh->select_user_task($_SESSION['signin'],'TRUE');
         // DEBUG
         //var_dump($res_select);
-        foreach($res_select as $row){
+        foreach($active_tasks as $row){
       ?>
       <table>
         <tr>
@@ -57,22 +67,56 @@ $dbh = new DbController();
           <td><?php echo "{$row['user_id']}" ?></td>
           <td><?php echo "{$row['title']}"; ?></td>
           <td><?php echo "{$row['body']}"; ?></td>
-          <td><?php echo "{$row['done']}"; ?></td>
           <td>
             <?php  ?>
             <form action="./edit.php" method="get">
               <input type="hidden" name=":id" value="<?php echo($row['id']); ?>">
-              <input type="submit" name="edit" value="EDIT">
+              <input type="submit" formaction="./task_edit.php" name="edit" value="EDIT">
             </form>
           </td>
           <td>
             <?php  ?>
             <form action="../action/index_function.php" method="post">
               <input type="hidden" name=":id" value="<?php echo($row['id']); ?>">
+              <input type="hidden" name=":done" value="FALSE">
+              <input type="hidden" name="_method" value="PUT">
+              <input type="submit" name="done" value="DONE">
+            </form>
+          </td>
+        </tr>
+      </table>
+      <?php } ?>
+    </ul>
+    <h1>COMPLETE LIST</h1>
+    <ul>
+      <?php
+        $complete_tasks = $dbh->select_user_task($_SESSION['signin'],'FALSE');
+        // DEBUG
+        //var_dump($res_select);
+        foreach($complete_tasks as $row){
+      ?>
+      <table>
+        <tr>
+          <td><?php echo "{$row['id']}" ?></td>
+          <td><?php echo "{$row['user_id']}" ?></td>
+          <td><?php echo "{$row['title']}"; ?></td>
+          <td><?php echo "{$row['body']}"; ?></td>
+          <td>
+            <form action="../action/index_function.php" method="post">
+              <input type="hidden" name=":id" value="<?php echo($row['id']); ?>">
               <input type="hidden" name="_method" value="DELETE"> 
               <input type="submit" name="delete" value="DELETE">
             </form>
           </td>
+          <td>
+            <form action="../action/index_function.php" method="post">
+              <input type="hidden" name=":id" value="<?php echo($row['id']); ?>">
+              <input type="hidden" name=":done" value="TRUE">
+              <input type="hidden" name="_method" value="PUT">
+              <input type="submit" name="done" value="RETURN">
+            </form>
+          </td>
+          
         </tr>
       </table>
       <?php } ?>

@@ -153,6 +153,54 @@ class DbMainteController{
     $this->log_file->record_logging($log_msg);
   }  
 
+  public function delete_default_all(){
+    //デフォルトユーザー(role:2)を取得
+    $defult_users = $this->select_users_default();
+  
+    //DEBUG
+    //var_dump($defult_users);
+
+    foreach ($defult_users as $defualt_user) {
+      //ユーザーに紐づくtaskを削除
+      var_dump($defualt_user['id']);
+      $this->delete_tasks_defualt($defualt_user['id']);
+    }
+
+    //ゲスト/デフォルトユーザー(role:2)を削除
+    $this->delete_users_defualt();
+  }
+
+  public function create_default_all(){
+    //管理者追加　この処理は特に使用しない
+    //$this->insert_users_administrator();
+
+    //ゲストユーザー追加
+    $this->insert_users_guest();
+
+    //デフォルトユーザー追加
+    for ($count = 1; $count < 11; $count++){
+      $name = "user" . $count;
+      $mail = $name . "@test.com";
+      $pass = password_hash($name . "pass", PASSWORD_DEFAULT);
+      $role = 2; //guest,defaultユーザー削除
+
+      //var_dump($name);
+      //var_dump($mail);
+      //var_dump($pass);
+      //var_dump($role);
+
+      $this-> insert_users_default($name,$mail,$pass,$role);  
+    }
+
+    //新規作成したデフォルトユーザーIDを取得し、デフォルトtask作成時のuser_idカラムに代入する
+    $new_defult_users = $this->select_users_default();
+    foreach ($new_defult_users as $defualt_user) {
+      //var_dump($defualt_user['id']);
+      for ($count = 1; $count < 6; $count++){
+        $this->insert_tasks_default($defualt_user['id']);
+      }
+    }
+  }
 }
 
 /**
@@ -164,52 +212,11 @@ class DbMainteController{
  * 4.作成したユーザーに紐づくデフォルトtaskを作成
  */
 
-$dbh = new DbMainteController;
+$db_mainte = new DbMainteController;
 
-//デフォルトユーザー(role:2)を取得
-$defult_users = $dbh->select_users_default();
-
-//DEBUG
-//var_dump($defult_users);
-
-//ユーザーに紐づくtaskを削除
-foreach ($defult_users as $defualt_user) {
-  //var_dump($defualt_user['id']);
-  //TODO もしtaskが存在すればに記述を変更したい
-  //$dbh->delete_tasks_defualt($defualt_user['id']);
-}
-
-//ゲスト/デフォルトユーザー(role:2)を削除
-//$dbh->delete_users_defualt();
+//$db_mainte->delete_default_all();
+$db_mainte->create_default_all();
 
 
-//管理者追加　この処理は特に使用しない
-//$dbh->insert_users_administrator();
 
-//ゲストユーザー追加
-$dbh->insert_users_guest();
-
-//デフォルトユーザー追加
-for ($count = 1; $count < 11; $count++){
-  $name = "user" . $count;
-  $mail = $name . "@test.com";
-  $pass = password_hash($name . "pass", PASSWORD_DEFAULT);
-  $role = 2; //guest,defaultユーザー削除
-
-  //var_dump($name);
-  //var_dump($mail);
-  //var_dump($pass);
-  //var_dump($role);
-  
-  $dbh-> insert_users_default($name,$mail,$pass,$role);  
-}
-
-//新規作成したデフォルトユーザーIDを取得し、デフォルトtask作成時のuser_idカラムに代入する
-$new_defult_users = $dbh->select_users_default();
-foreach ($new_defult_users as $defualt_user) {
-  //var_dump($defualt_user['id']);
-  for ($count = 1; $count < 6; $count++){
-    $dbh->insert_tasks_default($defualt_user['id']);
-  }
-}
 ?>

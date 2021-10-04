@@ -50,13 +50,12 @@ class DbController{
    * tasksテーブル用
    */
   public function insert_tasks($db_value){
-    $sql = 'INSERT INTO tasks(user_id, title, body, done) VALUES (:user_id, :title, :body, :done)';
+    $sql = 'INSERT INTO tasks(user_id, title, body) VALUES (:user_id, :title, :body)';
     $dbh = $this->db_conect();
     $stmt = $dbh->prepare($sql);
     $stmt->bindValue(":user_id", $db_value[':user_id']);
     $stmt->bindValue(":title", $db_value[':title']);
     $stmt->bindValue(":body", $db_value[':body']);
-    $stmt->bindValue(":done", $db_value[':done']);
     $stmt->execute();
     $dbh = null;
     $log_msg = __FUNCTION__ . " " . $db_value[':title'] . " " . $db_value[':body'];
@@ -94,14 +93,16 @@ class DbController{
 
   /**
    * DB SELECT処理
-   * index用全件取得
+   * index用userに紐づくtask全件取得
    */
-  public function select_user_task($db_value){
+  public function select_user_task($user_id,$done){
     //$sql = "SELECT * FROM tasks  JOIN users ON tasks.userid = users.id WHERE users.id = {$db_value}";
-    $sql = "SELECT * FROM tasks WHERE user_id = {$db_value}";
+    $sql = "SELECT * FROM tasks WHERE user_id = :user_id AND done = :done";
     $dbh = $this->db_conect();
-    $stmt = $dbh->query($sql);
-    //$stmt->bindValue(":user_id", $db_value);
+    $stmt = $dbh->prepare($sql);
+    $stmt->bindParam( ':user_id', $user_id);
+    $stmt->bindParam( ':done', $done);
+    $stmt->execute();
     $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
     $dbh = null;
     return $items;
@@ -114,26 +115,12 @@ class DbController{
    * DB SELECT処理
    * tasksテーブル特定レコード取得
    */
-  public function select_tasks_id($id){
-    $sql = "SELECT * FROM tasks WHERE id = {$id}"; // TODO sqlインジェクション対象になる?
-    $dbh = $this->db_conect();
-    $stmt = $dbh->query($sql);
-    $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    $dbh = null;
-    return $items;
-    $log_msg = __FUNCTION__;
-    $this->log_file->record_logging($log_msg);
-  }
-
-  /**
-   * DB SELECT処理
-   * usersテーブル特定レコード取得
-   */
-  public function select_users_name($db_value){
-    $sql = "SELECT * FROM users WHERE name = :name";
+  public function select_tasks_id($task_id,$user_id){
+    $sql = "SELECT * FROM tasks WHERE id = :id AND user_id = :user_id";
     $dbh = $this->db_conect();
     $stmt = $dbh->prepare($sql);
-    $stmt->bindParam(":name", $db_value);
+    $stmt->bindParam(":id", $task_id);
+    $stmt->bindParam(":user_id", $user_id);
     $stmt->execute();
     $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
     $dbh = null;
@@ -144,13 +131,47 @@ class DbController{
 
   /**
    * DB SELECT処理
-   * usersテーブル特定レコード取得
+   * user idを基にusersテーブル特定レコード取得
    */
-  public function select_users_mail($db_value){
+  public function select_users_id($id){
+    $sql = "SELECT * FROM users WHERE id = :id";
+    $dbh = $this->db_conect();
+    $stmt = $dbh->prepare($sql);
+    $stmt->bindParam(":id", $id);
+    $stmt->execute();
+    $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $dbh = null;
+    return $items;
+    $log_msg = __FUNCTION__;
+    $this->log_file->record_logging($log_msg);
+  }
+
+  /**
+   * DB SELECT処理
+   * user nameを基にusersテーブル特定レコード取得
+   */
+  public function select_users_name($user_name){
+    $sql = "SELECT * FROM users WHERE name = :name";
+    $dbh = $this->db_conect();
+    $stmt = $dbh->prepare($sql);
+    $stmt->bindParam(":name", $user_name);
+    $stmt->execute();
+    $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $dbh = null;
+    return $items;
+    $log_msg = __FUNCTION__;
+    $this->log_file->record_logging($log_msg);
+  }
+
+  /**
+   * DB SELECT処理
+   * user maileを基にusersテーブル特定レコード取得
+   */
+  public function select_users_mail($user_mail){
     $sql = "SELECT * FROM users WHERE mail = :mail";
     $dbh = $this->db_conect();
     $stmt = $dbh->prepare($sql);
-    $stmt->bindParam(":mail", $db_value);
+    $stmt->bindParam(":mail", $user_mail);
     $stmt->execute();
     $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
     $dbh = null;
@@ -161,15 +182,16 @@ class DbController{
 
   /**
    * DB UPDATE処理
+   * taskを更新する
    */
   public function update_tasks($db_value){
     //var_dump($db_value);
-    $sql = "UPDATE tasks SET title=:title, body=:body, done=:done WHERE id={$db_value[':id']}";
+    $sql = "UPDATE tasks SET title=:title, body=:body WHERE id=:id";
     $dbh = $this->db_conect();
     $stmt = $dbh->prepare($sql);
+    $stmt->bindValue(":id", $db_value[':id']);
     $stmt->bindValue(":title", $db_value[':title']);
     $stmt->bindValue(":body", $db_value[':body']);
-    $stmt->bindValue(":done", $db_value[':done']);
     $stmt->execute();
     $dbh = null;
     $log_msg = __FUNCTION__ . " " . $db_value[':title'] . " " . $db_value[':body'];
@@ -177,7 +199,57 @@ class DbController{
   }
 
   /**
+   * DB UPDATE処理
+   * userを更新する
+   */
+  public function update_users($db_value){
+    //var_dump($db_value);
+    $sql = "UPDATE users SET name=:name, mail=:mail WHERE id=:id";
+    $dbh = $this->db_conect();
+    $stmt = $dbh->prepare($sql);
+    $stmt->bindValue(":id", $db_value[':id']);
+    $stmt->bindValue(":name", $db_value[':name']);
+    $stmt->bindValue(":mail", $db_value[':mail']);
+    $stmt->execute();
+    $dbh = null;
+    $log_msg = __FUNCTION__ . " " . $db_value[':name'] . " " . $db_value[':mail'];
+    $this->log_file->record_logging($log_msg);
+  }
+
+  public function update_users_status($user_status,$user_id){
+    //var_dump($db_value);
+    $sql = "UPDATE users SET status=:status WHERE id=:id";
+    $dbh = $this->db_conect();
+    $stmt = $dbh->prepare($sql);
+    $stmt->bindValue(":id", $user_id); //sessionから取得
+    $stmt->bindValue(":status", $user_status);
+
+    $stmt->execute();
+    $dbh = null;
+    $log_msg = __FUNCTION__ . " " . $user_id . " " . $user_status[':status'];
+    $this->log_file->record_logging($log_msg);
+  }
+
+    /**
+   * DB UPDATE処理
+   * taskを完了へと変更する
+   */
+  public function update_tasks_done($db_value){
+    //var_dump($db_value);
+    $sql = "UPDATE tasks SET done=:done WHERE id = :id";
+    $dbh = $this->db_conect();
+    $stmt = $dbh->prepare($sql);
+    $stmt->bindValue(":id", $db_value[':id']);
+    $stmt->bindValue(":done", $db_value[':done']);
+    $stmt->execute();
+    $dbh = null;
+    $log_msg = __FUNCTION__ . " " . $db_value[':id'];
+    $this->log_file->record_logging($log_msg);
+  }
+
+  /**
    * DB DELETE処理
+   * taskを削除する
    */
   public function delete_tasks($db_value){
     $sql = "DELETE FROM tasks WHERE id=:id";
@@ -240,7 +312,7 @@ class DbController{
     //sqlite用
 		//$sql = "CREATE TABLE IF NOT EXISTS users(id INTEGER PRIMARY KEY AUTOINCREMENT,name VARCHAR(10),pass TEXT, mail TEXT)";
     //postgresql用
-    $sql = 'CREATE TABLE users(id SERIAL,name VARCHAR(10),pass TEXT, mail TEXT,role TEXT default 0, status TEXT default 0, PRIMARY KEY (id))';
+    $sql = "CREATE TABLE users(id SERIAL,name VARCHAR(10),pass TEXT, mail TEXT,role INTEGER default 0, status BOOLEAN default 'TRUE', PRIMARY KEY (id))";
 		$stmt = $dbh->prepare($sql);
     $stmt->execute();
 	}
@@ -250,7 +322,7 @@ class DbController{
     //sqlite用
 		//$sql = "CREATE TABLE IF NOT EXISTS tasks(id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER, title VARCHAR(10), body VARCHAR(30), done INTEGER)";
     //postgresql用
-    $sql = 'CREATE TABLE tasks(id SERIAL, user_id INTEGER, title VARCHAR(10), body VARCHAR(30), done INTEGER default 0, PRIMARY KEY (id))';
+    $sql = "CREATE TABLE tasks(id SERIAL, user_id INTEGER, title VARCHAR(100), body VARCHAR(100), done BOOLEAN default 'TRUE', PRIMARY KEY (id))";
 		$stmt = $dbh->prepare($sql);
     $stmt->execute();
 	}

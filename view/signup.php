@@ -10,20 +10,20 @@
     <div class="signupform">
       <form action="../action/signup_function.php" method="post"> 
         <div>
-            <label>名前：<label>
+            <label>NAME：<label>
             <input type="text" name="name" required>
         </div>
         <div>
-            <label>メールアドレス：<label>
+            <label>MAIL：<label>
             <input type="text" name="mail" required>
         </div>
         <div>
-            <label>パスワード：<label>
+            <label>PASSWORD：<label>
             <input type="password" name="pass" required>
         </div>
-        <input type="submit" value="新規登録">
+        <input type="submit" value="SIGNUP">
       </form>
     </div>
-    <p>すでに登録済みの方は<a href="signin.php">こちら</a></p>
+    <p>Click<a href="signin.php"> here </a>if you have already registered</p>
   </body>
 </html>
