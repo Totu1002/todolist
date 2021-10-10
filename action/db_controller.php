@@ -70,9 +70,10 @@ class DbController{
     $sql = "INSERT INTO users(name, mail, pass) VALUES (:name, :mail, :pass)";
     $dbh = $this->db_conect();
     $stmt = $dbh->prepare($sql);
-    $stmt->bindValue(':name', $db_value[':name']);
-    $stmt->bindValue(':mail', $db_value[':mail']);
-    $stmt->bindValue(':pass', $db_value[':pass']);
+    $stmt->bindValue(':name', $db_value['name']);
+    $stmt->bindValue(':mail', $db_value['mail']);
+    $stmt->bindValue(':pass', password_hash($_POST['pass'], PASSWORD_DEFAULT));
+    
     $stmt->execute();
   }
 

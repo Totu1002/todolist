@@ -3,8 +3,6 @@ require_once 'db_controller.php';
 
 $name = $_POST['name'];
 $mail = $_POST['mail'];
-//passwordハッシュ化処理
-$pass = password_hash($_POST['pass'], PASSWORD_DEFAULT);
 
 $dbh = new DbController;
 $member_mail = $dbh->select_users_mail($mail);
@@ -20,7 +18,7 @@ if ($member_name['name'] === $name) {
     $msg = 'The same email address exists.';
     $link = '<a href="../view/signup.php">return</a>';
 } else {
-    $dbh->insert_users($db_val);
+    $dbh->insert_users($_POST);
     $msg = 'Member registration is complete';
     $link = '<a href="../view/signin.php">signin page</a>';
 }

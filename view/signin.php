@@ -87,24 +87,18 @@ $message = htmlspecialchars($message);
         <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
 
         <label for="inputName" class="sr-only">User Name</label>
-        <input type="name" id="inputName" class="form-control" name="name" placeholder="UserName" required="" autofocus="">
+        <input type="name" id="inputName" class="form-control mb-2" name="name" placeholder="UserName" required="" autofocus="">
 
         <label for="inputPassword" class="sr-only">Password</label>
-        <input type="pass" id="inputPassword" class="form-control" name="pass" placeholder="Password" required="">
-        
-        <div class="checkbox mb-3">
-          <label>
-            <input type="checkbox" value="remember-me"> Remember me
-          </label>
-        </div>
-        <button class="btn btn-lg btn-primary btn-block mb-3" name="sginin" type="submit" value="SGININ">SGININ</button>
+        <input type="pass" id="inputPassword" class="form-control mb-2" name="pass" placeholder="Password" required="">
+        <button class="btn btn-lg btn-primary btn-block mb-2" name="sginin" type="submit" value="SGININ">SGININ</button>
       </form>
 
       <!-- guestユーザーにつきhiddenを使用 -->
       <form action="signin.php" method="post" class="">
         <input type="hidden" name="name" value="guest">
         <input type="hidden" name="pass" value="guestpass">
-        <input type="submit" class="btn btn-lg btn-warning btn-block mb-3" name="guest_login" value="GUEST SGININ">
+        <input type="submit" class="btn btn-lg btn-warning btn-block mb-2" name="guest_login" value="GUEST SGININ">
       </form>
       <p>Click<a href="signup.php"> here </a>for new registration</p>
     </div>
