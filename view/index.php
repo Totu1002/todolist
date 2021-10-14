@@ -23,7 +23,7 @@ if (isset($_SESSION["signin"]) && $_SESSION["role"] === 1) {
 }
 
 //サインイン時表示用メッセージ
-$message = "Welcom to user : " . $_SESSION['signin'];
+$message = "Welcom to user : " . $_SESSION["user"];
 $message = htmlspecialchars($message);
 
 $dbh = new DbController();
@@ -44,15 +44,22 @@ $dbh = new DbController();
           <div class="col col-lg-9 col-xl-7">
             <div class="card rounded-3">
               <div class="card-body p-4">
-    
+              <div class="message"><?php echo $message;?></div>
+                <!--<form action="../action/index_function.php" method="get">
+                  <input type="hidden" name="id" value="<?php echo($_SESSION['signin']) ?>">
+                </form>-->
+                <a href="./user_edit.php"><button type="button" class="btn btn-success">USER EDIT</button></a>
+                <a href="../action/logout_function.php"><button type="button" class="btn btn-warning">LOGOUT</button></a>
+              
               <h1>FORM</h1>
               <form action="../action/index_function.php" method="post" class="row row-cols-lg-auto g-3 justify-content-center align-items-center mb-4 pb-2">
                 <div class="col-12">
                   <div class="form-outline">
                     <input type="text" id="TaskTitle" name=":title" class="form-control" placeholder="Enter a task title here">
                     <label class="form-label" for="TaskTitle"></label>
-                    <input type="text" id="TaskBody" name=":body" class="form-control" placeholder="Enter a task body here">
-                    <label class="form-label" for="TaskBody"></label>
+                    <!--<input type="text" id="TaskBody" name=":body" class="form-control" placeholder="Enter a task body here">
+                    <label class="form-label" for="TaskBody"></label>-->
+                    <textarea class="form-control mb-2" rows="3" type="text" id="TaskBody" name=":body" placeholder="Enter a task body here"></textarea>
                     <!-- タスクステータス管理用value デフォルト:1 未完了 -->
                     <!--<input type="hidden" name=":done" value="1">-->
                     <!-- user_idへusers/idを送信 -->
@@ -60,7 +67,7 @@ $dbh = new DbController();
                   </div>
                 </div>
                 <div class="col-12" style="text-align: center;">
-                  <button type="submit" class="btn btn-primary"name="insert" value="SUBMIT">SUBMIT</button>
+                  <button type="submit" class="btn btn-primary" name="insert" value="SUBMIT">SUBMIT</button>
                 </div>
               </form>
     
@@ -68,7 +75,7 @@ $dbh = new DbController();
                 <table class="table mb-4">
                   <thead>
                     <tr>
-                      <th scope="col">ID.</th>
+                      <th scope="col">ID</th>
                       <th scope="col">USER ID</th>
                       <th scope="col">TITLE</th>
                       <th scope="col">BODY</th>
@@ -114,7 +121,7 @@ $dbh = new DbController();
                 <table class="table mb-4">
                   <thead>
                     <tr>
-                      <th scope="col">ID.</th>
+                      <th scope="col">ID</th>
                       <th scope="col">USER ID</th>
                       <th scope="col">TITLE</th>
                       <th scope="col">BODY</th>

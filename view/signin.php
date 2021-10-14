@@ -46,6 +46,7 @@ else {
     if (password_verify($_POST['pass'], $signin_user['pass']) && $signin_user['status'] === TRUE){
       session_regenerate_id(TRUE); //セッションidを再発行
       $_SESSION["signin"] = $signin_user['id'];
+      $_SESSION["user"] = $signin_user['name'];
       if ($signin_user['role'] === 1){
         $_SESSION["role"] = $signin_user['role'];
         header("Location: index_admin.php"); //ログイン後のページにリダイレクト
