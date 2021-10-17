@@ -60,4 +60,35 @@ if(isset($_POST['update_user'])){
   exit();
 }
 
+/**
+ * DB UPDATE処理
+ * user passwordを更新する
+ */
+if (isset($_POST['update_password'])){
+  $user = $dbh->select_users_id($_POST[':id']);
+  $user = $user[0];
+
+  if(empty($_POST['current_password']) || empty($_POST["new_password"]) || empty($_POST["again_new_password"])) {
+    $message = 'The input field is blank';
+    header("Location: ../view/change_password.php?message=$message");
+    exit();
+  }
+
+  if (password_verify($_POST['current_password'], $user['pass'])){
+    if ($_POST['new_password'] === $_POST['again_new_password']){
+      $dbh->update_users_password($_POST['new_password'],$_POST[':id']);
+      header("Location: ../view/index.php");
+      exit();
+    }else{
+      $message = 'New password does not match';
+      header("Location: ../view/change_password.php?message=$message");
+      exit();
+    }
+  } else {
+    $message = 'Password is incorrect';
+    header("Location: ../view/change_password.php?message=$message");
+    exit();
+  }
+}
+
 ?>

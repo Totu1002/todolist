@@ -231,6 +231,19 @@ class DbController{
     $this->log_file->record_logging($log_msg);
   }
 
+  public function update_users_password($user_password,$user_id){
+    //var_dump($db_value);
+    $sql = "UPDATE users SET pass=:pass WHERE id=:id";
+    $dbh = $this->db_conect();
+    $stmt = $dbh->prepare($sql);
+    $stmt->bindValue(":id", $user_id); //sessionから取得
+    $stmt->bindValue(':pass', password_hash($user_password, PASSWORD_DEFAULT));
+    $stmt->execute();
+    $dbh = null;
+    $log_msg = __FUNCTION__ . " " . $user_id;
+    $this->log_file->record_logging($log_msg);
+  }
+
     /**
    * DB UPDATE処理
    * taskを完了へと変更する
@@ -313,7 +326,7 @@ class DbController{
     //sqlite用
 		//$sql = "CREATE TABLE IF NOT EXISTS users(id INTEGER PRIMARY KEY AUTOINCREMENT,name VARCHAR(10),pass TEXT, mail TEXT)";
     //postgresql用
-    $sql = "CREATE TABLE users(id SERIAL,name VARCHAR(10),pass TEXT, mail TEXT,role INTEGER default 0, status BOOLEAN default 'TRUE', PRIMARY KEY (id))";
+    $sql = "CREATE TABLE users(id SERIAL,name VARCHAR(100),pass TEXT, mail TEXT,role INTEGER default 0, status BOOLEAN default 'TRUE', PRIMARY KEY (id))";
 		$stmt = $dbh->prepare($sql);
     $stmt->execute();
 	}
