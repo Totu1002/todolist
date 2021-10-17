@@ -49,7 +49,7 @@ $dbh = new DbController();
                   <input type="hidden" name="id" value="<?php echo($_SESSION['signin']) ?>">
                 </form>-->
                 <a href="./user_edit.php"><button type="button" class="btn btn-success">USER EDIT</button></a>
-                <a href="../action/logout_function.php"><button type="button" class="btn btn-warning">LOGOUT</button></a>
+                <a href="../action/signout_function.php"><button type="button" class="btn btn-warning">SIGNOUT</button></a>
               
               <h1>FORM</h1>
               <form action="../action/index_function.php" method="post" class="row row-cols-lg-auto g-3 justify-content-center align-items-center mb-4 pb-2">

@@ -1,17 +1,12 @@
 <?php
-require_once './db_controller.php';
-
+//セッションを使うことを宣言
 session_start();
 
 //ログインされていない場合は強制的にログインページにリダイレクト
-if (!isset($_SESSION['signin'])) {
-  header("Location: index.php");
+if (!isset($_SESSION["signin"])) {
+  header("Location: ../view/signin.php");
   exit();
 }
-
-//TODO 退会処理→正常性判断処理を追加したい
-$dbh = new DbController();
-$dbh->update_users_status("FALSE",$_SESSION['signin']);
 
 //セッション変数をクリア
 $_SESSION = array();
@@ -28,9 +23,11 @@ session_destroy();
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<title>TEST</title>
-<link href="login.css" rel="stylesheet" type="text/css">
+  <meta charset="UTF-8">
+  <title>TEST</title>
+  <link href="login.css" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="../css/.css">
+  <link rel="stylesheet" href="../bootstrap-4.1.3-dist/css/bootstrap.min.css">
 </head>
 <body>
 <section class="vh-100" style="background-color: #eee;">
@@ -39,9 +36,9 @@ session_destroy();
           <div class="col col-lg-9 col-xl-7">
             <div class="card rounded-3">
               <div class="card-body p-4">
-                <h1>Withdrow</h1>
-                <p class="message">Withdrawal is complete</p>
-                <a href="../view/signup.php">SIGNUP</a>
+                <h1>SIGNOUT</h1>
+                <p class="message">Signout is complete</p>
+                <a href="../view/signin.php">SIGNIN</a>
               </div>
             </div>
           </div>
